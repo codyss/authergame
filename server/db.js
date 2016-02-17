@@ -3,7 +3,7 @@
 var mongoose = require('mongoose');
 var Promise = require('bluebird'); 
 Promise.promisifyAll(mongoose);
-var pw = require('passwords.js')
+var pw = require('./passwords.js')
 
 var databaseURI = 'mongodb://localhost:'+ pw.mongo.port + '/' + pw.mongo.name;
 
