@@ -17,7 +17,6 @@ router.param('id', function (req, res, next, id) {
 });
 
 router.get('/', function (req, res, next) {
-	console.log(req.user);
 	if(req.user) {
 		Story.find({}).populate('author').exec()
 		.then(function (stories) {
@@ -57,7 +56,7 @@ router.get('/:id', function (req, res, next) {
 });
 
 router.put('/:id', function (req, res, next) {
-	if(req.user._id === req.body.author._id) {
+	if(req.user._id === req.body.author._id || req.user.isAdmin) {
 		_.extend(req.story, req.body);
 		req.story.save()
 		.then(function (story) {

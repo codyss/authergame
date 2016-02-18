@@ -4,20 +4,43 @@ var router = require('express').Router();
 
 var HttpError = require('../utils/HttpError');
 var User = require('../api/users/user.model');
+var crypto = require('crypto');
+
+var salt;
+var hashedPW;
+
+
+
+
+
 
 router.post('/login', function (req, res, next) {
-	User.findOne(req.body).exec()
-	.then(function (user) {
-		if (!user) throw HttpError(401);
-		req.login(user, function () {
-			res.json(user);
-		});
+	User.findOne({email: req.body.email}).exec()
+	.then(user=> {
+		console.log(req.body)
+		console.log(user)
+		var saltToUse = user.salt
+		var newHashed = crypto.pbkdf2Sync(req.body.password, saltToUse, 100, 512, 'sha512').toString('hex')
+		if(newHashed === user.password) {
+			req.login(user, function () {
+				res.json(user);
+			});
+		} else {
+			throw HttpError(401)
+		}
 	})
 	.then(null, next);
 });
 
 router.post('/signup', function (req, res, next) {
-	User.create(req.body)
+	salt = crypto.randomBytes(256).toString('hex')
+	hashedPW = crypto.pbkdf2Sync(req.body.password, salt, 100, 512, 'sha512').toString('hex')
+	var userToCreate = {
+		salt: salt,
+		password: hashedPW,
+		email: req.body.email
+	};
+	User.create(userToCreate)
 	.then(function (user) {
 		req.login(user, function () {
 			res.status(201).json(user);

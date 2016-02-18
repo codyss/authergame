@@ -24,6 +24,7 @@ var User = new mongoose.Schema({
 		required: true,
 		unique: true
 	},
+	salt: String,
 	password: String,
 	google: {
 		id: String,
