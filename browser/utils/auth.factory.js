@@ -16,6 +16,7 @@ app.factory('Auth', function ($http, $rootScope, User) {
 	}
 	function setMe (user) {
 		me = new User(user);
+		console.log(me);
 		return me;
 	}
 	function removeMe () {

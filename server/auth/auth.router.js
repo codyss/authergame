@@ -28,6 +28,7 @@ router.post('/signup', function (req, res, next) {
 
 router.get('/me', function (req, res, next) {
 	res.json(req.user);
+	console.log(req.user);
 });
 
 router.delete('/me', function (req, res, next) {
